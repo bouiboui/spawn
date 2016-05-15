@@ -1,5 +1,0 @@
-<?php
-
-$cases = [
-  'process.php'  
-];
