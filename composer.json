@@ -1,0 +1,12 @@
+{
+    "name": "bouiboui/spawn",
+    "description": "Spawn and monitor processes with this command-line utility.",
+    "license": "Unlicense",
+    "require": {
+        "mnapoli/silly": "^1.3",
+        "symfony/process": "^3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.3"
+    }
+}
