@@ -1,5 +1,5 @@
 <?php
 
-file_put_contents('test.txt', var_export($argv, true).PHP_EOL, FILE_APPEND);
+echo is_file($argv[1]) ? file_get_contents($argv[1]) : var_export($argv, true);
 
-sleep(1);
+sleep(mt_rand(0, 2));
