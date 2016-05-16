@@ -47,7 +47,7 @@ class Spawn
      */
     private function addProcess(array $arguments = [])
     {
-        $process = ProcessBuilder::create(explode(' ', $command = $arguments[0]));
+        $process = ProcessBuilder::create(explode(' ', $arguments[0])); // $arguments[0] = command
         foreach (array_slice($arguments, 1) as $singleArgument) {
             $process->add($singleArgument);
         }

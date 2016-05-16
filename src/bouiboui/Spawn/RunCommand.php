@@ -50,7 +50,7 @@ class RunCommand extends Command
         $processHelper = $this->getHelperSet()->get('process');
 
         // Before start
-        $spawn->addOnBeforeStartListener(function () use ($output, $progressBar, $spawn) {
+        $spawn->addOnBeforeStartListener(function () use ($output, $spawn) {
             $formattedLine = $this->getHelper('formatter')
                 ->formatSection('Spawn', sprintf('Starting %d process(es)', $spawn->getProcessesCount()) );
             $output->writeln($formattedLine);
