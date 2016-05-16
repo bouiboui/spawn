@@ -1,4 +1,4 @@
-![Imgur](http://i.imgur.com/GCFZHRe.png)
+![Spawn logo](http://i.imgur.com/GCFZHRe.png)
 
 [![Software License][ico-license]](LICENSE) [![SensioLabsInsight](https://insight.sensiolabs.com/projects/20fe60c6-7257-442e-bff4-9c057580afd6/mini.png)](https://insight.sensiolabs.com/projects/20fe60c6-7257-442e-bff4-9c057580afd6)
 
