@@ -1,64 +1,64 @@
 <?php
 
+use bouiboui\Spawn\Spawn;
+use Symfony\Component\Console\Helper\ProcessHelper;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\ProcessBuilder;
+use Symfony\Component\Process\Process;
 
 include_once dirname(__DIR__) . '/vendor/autoload.php';
 
 $app = new Silly\Application();
+$spawn = new Spawn();
 
-$app->command('run name* [--args=]* [--dir=]*', function ($name, $args, $dir, OutputInterface $output) {
-    $processes = [];
-    foreach ($name as $key => $process) {
-        if (count($args) > 0 && array_key_exists($key, $args) && null !== ($processArguments = $args[$key])) {
-            // Range
-            if (preg_match_all('/\{([^\}]+?)\}/', $processArguments, $ranges)) {
-                foreach ($ranges[1] as $range) {
-                    list($rStart, $rEnd) = explode('-', $range);
-                    $num = 0;
-                    while ($num <= ($rEnd - $rStart)) {
-                        $processes[] = $process . ' ' . escapeshellarg(str_replace('{' . $range . '}', $rStart + $num, $processArguments));
-                        $num++;
-                    }
-                }
-            } else {
-                $processes[] = $process . ' ' . escapeshellarg($processArguments);
-            }
+$app->command('run commands* [--args=]* [--dir=]* [--outfile=]', function ($commands, $args, $dir, $outfile, OutputInterface $output) use ($spawn) {
+
+    // Parse commands
+    foreach ($commands as $cNum => $command) {
+        if (array_key_exists($cNum, $args)) {
+            $spawn->addProcessesFromArguments($command, $args[$cNum]);
         }
-        if (count($dir) > 0 && array_key_exists($key, $dir) && null !== ($processDir = $dir[$key])) {
-            if (file_exists($processDir) && is_dir($processDir)) {
-                $files = array_diff(scandir($processDir), ['.', '..']);
-                foreach ($files as $fileName) {
-                    $filePath = $processDir.'/'.$fileName;
-                    if (is_file($filePath)) {
-                        $processes[] = $process . ' ' . escapeshellarg($filePath);
-                    }
-                }
-            }
+        if (array_key_exists($cNum, $dir)) {
+            $spawn->addProcessesFromDirectory($command, $dir[$cNum]);
+        }
+        if (0 === count($args) + count($dir)) {
+            $spawn->addSingleProcess($command);
         }
     }
-    
-    if (count($processes) < 1) {
-        $processes = $name;
-    }
 
-    $output->writeln('Starting processes');
+    $progressBar = new ProgressBar($output, $spawn->getProcessesCount());
+    $progressBar->setFormat(' %current%/%max% [%bar%] %percent:3s%% (%filename%) %elapsed:6s%/%estimated:-6s% %memory:6s%');
 
-    $progress = new ProgressBar($output, count($processes));
-    $progress->setFormat(' %current%/%max% [%bar%] %percent:3s%% (%filename%) %elapsed:6s%/%estimated:-6s% %memory:6s%');
-    $progress->setMessage($processes[0], 'filename');
-    $progress->start();
-    
+    /** @var ProcessHelper $processHelper */
     $processHelper = $this->getHelperSet()->get('process');
-    foreach ($processes as $key => $n) {
-        $progress->setMessage($n, 'filename');
-        $cmd = explode(' ', $n);
-        $p = ProcessBuilder::create($cmd)->getProcess();
+
+    // Before start
+    $spawn->addOnBeforeStartListener(function () use ($output, $progressBar) {
+        $output->writeln('Starting processes');
+    });
+
+    // Process start
+    $spawn->addOnProcessStartListener(function (Process $p) use ($output, $progressBar, $processHelper) {
+        $progressBar->setMessage($p->getCommandLine(), 'filename');
         $processHelper->run($output, $p);
-        $progress->advance();
-    }
-    $progress->finish();
+    });
+
+    // Process end
+    $spawn->addOnProcessEndListener(function (Process $p) use ($outfile, $progressBar) {
+        $progressBar->advance();
+        if (null !== $outfile && file_exists($outfile) && is_writable($outfile)) {
+            file_put_contents($outfile, '$ ' . $p->getCommandLine() . PHP_EOL . $p->getOutput() . PHP_EOL . PHP_EOL, FILE_APPEND);
+        }
+    });
+
+    // Everything done
+    $spawn->addOnFinishListener(function () use ($progressBar) {
+        $progressBar->finish();
+    });
+
+    // Start!
+    $spawn->runProcesses();
+
 });
 
 return $app;
