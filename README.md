@@ -71,6 +71,21 @@ Starting processes
  2/3 [==================>---------]  66% (php get_gravatar.php "data/users/rasmus-lerdorf.json") 5 secs/8 secs 1.2 MiB
  3/3 [============================] 100% (php get_gravatar.php "data/users/aaron-saray.json") 9 secs/9 secs 1.2 MiB
 ```
+Save output to a file
+``` bash
+php spawn.php run "php get_twitter_handle.php" --dir "data/users" --outfile=handles.txt
+
+# handles.txt
+$ php get_twitter_handle.php "data/users/martin-fowler.json"
+@martinfowler
+
+$ php get_twitter_handle.php "data/users/rasmus-lerdorf.json"
+@rasmus
+
+$ php get_twitter_handle.php "data/users/aaron-saray.json"
+@aaronsaray
+```
+
 
 ## Credits
 
@@ -85,15 +100,6 @@ Unlicense. Please see [License File](LICENSE) for more information.
 
 [ico-version]: https://img.shields.io/packagist/v/:vendor/:package_name.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-Unlicense-brightgreen.svg?style=flat-square
-[ico-travis]: https://img.shields.io/travis/:vendor/:package_name/master.svg?style=flat-square
-[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/:vendor/:package_name.svg?style=flat-square
-[ico-code-quality]: https://img.shields.io/scrutinizer/g/:vendor/:package_name.svg?style=flat-square
-[ico-downloads]: https://img.shields.io/packagist/dt/:vendor/:package_name.svg?style=flat-square
 
 [link-packagist]: https://packagist.org/packages/:vendor/:package_name
-[link-travis]: https://travis-ci.org/:vendor/:package_name
-[link-scrutinizer]: https://scrutinizer-ci.com/g/:vendor/:package_name/code-structure
-[link-code-quality]: https://scrutinizer-ci.com/g/:vendor/:package_name
-[link-downloads]: https://packagist.org/packages/:vendor/:package_name
 [link-author]: https://github.com/:author_username
-[link-contributors]: ../../contributors
