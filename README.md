@@ -1,6 +1,6 @@
 # spawn
 
-[![Software License][ico-license]](LICENSE)
+[![Software License][ico-license]](LICENSE) [![SensioLabsInsight](https://insight.sensiolabs.com/projects/20fe60c6-7257-442e-bff4-9c057580afd6/mini.png)](https://insight.sensiolabs.com/projects/20fe60c6-7257-442e-bff4-9c057580afd6)
 
 Recently I've worked on several projects that call micro-processes for simple tasks (sending JSON data to a webservice, uploading a file, sending an email) in bulk, with sensibly different arguments. Spawn is a command-line utility that makes these calls and displays the progress with a progress bar like so:
 
