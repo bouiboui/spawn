@@ -5,8 +5,7 @@
 Recently I've worked on several projects that call micro-processes for simple tasks (sending JSON data to a webservice, uploading a file, sending an email) in bulk, with sensibly different arguments. Spawn is a command-line utility that makes these calls and displays the progress with a progress bar like so:
 
 ```bash
-Starting processes
- 0/3 [>---------------------------]   0% (php send_updates.php "data/client1.json") < 1 sec/< 1 sec 1.0 MiB
+[Spawn] Starting 3 process(es)
  1/3 [=========>------------------]  33% (php send_updates.php "data/client1.json") 4 secs/12 secs 1.2 MiB
  2/3 [==================>---------]  66% (php send_updates.php "data/client2.json") 9 secs/14 secs 1.2 MiB
  3/3 [============================] 100% (php send_updates.php "data/client3.json") 14 secs/14 secs 1.2 MiB
@@ -19,35 +18,29 @@ Starting processes
 
 ## Install
 
-``` bash
-git clone https://github.com/bouiboui/spawn.git
-composer install
-```
-
-Spawn will be compiled to a .phar in the future.
+[Download spawn.phar from the latest release](https://github.com/bouiboui/spawn/releases/download/0.1/spawn.phar)
 
 ## Usage
 
 Run a single process
 ``` bash
-php spawn.php run "php send_bulk_data.php"
+php spawn.phar "php send_bulk_data.php"
 
-Starting processes
+[Spawn] Starting 1 process(es)
  1/1 [============================] 100% (php send_bulk_data.php)  1 min/1 min  1.2 MiB
 ```
 Pass arguments
 ``` bash
-php spawn.php run "php send_latest_invoices.php" --args "startdate=2016-01-01"
+php spawn.phar "php send_latest_invoices.php" --args="startdate=2016-01-01"
 
-Starting processes
+[Spawn] Starting 1 process(es)
  1/1 [============================] 100% (php send_latest_invoices.php "startdate=2016-01-01") 13 secs/13 secs 1.2 MiB
 ```
 Add a range in the arguments
 ``` bash
-php spawn.php run "php convert_pdfs.php" --args "document{1-42}.pdf"
+php spawn.phar "php convert_pdfs.php" --args="document{1-42}.pdf"
 
-Starting processes
-  0/42 [>---------------------------]   0% (php convert_pdfs.php "document1.pdf") < 1 sec/< 1 sec 1.0 MiB
+[Spawn] Starting 42 process(es)
   4/42 [==>-------------------------]   9% (php convert_pdfs.php "document4.pdf") < 1 sec/< 1 sec 1.2 MiB
   8/42 [=====>----------------------]  19% (php convert_pdfs.php "document8.pdf")  1 sec/5 secs 1.2 MiB
  12/42 [========>-------------------]  28% (php convert_pdfs.php "document12.pdf") 2 secs/7 secs 1.2 MiB
@@ -63,17 +56,16 @@ Starting processes
 ```
 Run process for each file in a directory
 ``` bash
-php spawn.php run "php get_gravatar.php" --dir "data/users"
+php spawn.phar "php get_gravatar.php" --dir="data/users"
 
-Starting processes
- 0/3 [>---------------------------]   0% (php get_gravatar.php "data/users/martin-fowler.json") < 1 sec/< 1 sec 1.0 MiB
+[Spawn] Starting 3 process(es)
  1/3 [=========>------------------]  33% (php get_gravatar.php "data/users/martin-fowler.json") 4 secs/12 secs 1.2 MiB
  2/3 [==================>---------]  66% (php get_gravatar.php "data/users/rasmus-lerdorf.json") 5 secs/8 secs 1.2 MiB
  3/3 [============================] 100% (php get_gravatar.php "data/users/aaron-saray.json") 9 secs/9 secs 1.2 MiB
 ```
 Save output to a file
 ``` bash
-php spawn.php run "php get_twitter_handle.php" --dir "data/users" --outfile=handles.txt
+php spawn.phar "php get_twitter_handle.php" --dir="data/users" --outfile="handles.txt"
 
 # handles.txt
 $ php get_twitter_handle.php "data/users/martin-fowler.json"
