@@ -18,7 +18,7 @@ Recently I've worked on several projects that call micro-processes for simple ta
 
 ## Install
 
-[Download spawn.phar from the latest release](https://github.com/bouiboui/spawn/releases/download/latest/spawn.phar)
+[Download spawn.phar from the latest release](https://github.com/bouiboui/spawn/releases/download/0.1/spawn.phar)
 
 ## Usage
 
