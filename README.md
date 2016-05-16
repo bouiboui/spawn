@@ -81,14 +81,20 @@ $ php get_twitter_handle.php "data/users/aaron-saray.json"
 
 ## Credits
 
-
 - bouiboui — [Github](https://github.com/bouiboui) [Twitter](https://twitter.com/j_____________n) [Website](http://cod3.net)
 - [All contributors](https://github.com/bouiboui/spawn/graphs/contributors)
 
 
 ## License
 
-Unlicense. Please see [License File](LICENSE) for more information.
+Unlicense. Public domain, basically. Please treat it kindly. See [License File](LICENSE) for more information. 
+
+This project uses the following open source projects 
+- [symfony/process](https://github.com/symfony/process) by [Fabien Potencier](https://github.com/fabpot) — [License](https://github.com/symfony/process/blob/master/LICENSE).
+- [symfony/console](https://github.com/symfony/console) by [Fabien Potencier](https://github.com/fabpot) — [License](https://github.com/symfony/console/blob/master/LICENSE).
+- [phpunit/phpunit](https://github.com/sebastianbergmann/phpunit) by [Sebastian Bergmann](https://github.com/sebastianbergmann) — [License](https://github.com/sebastianbergmann/phpunit/blob/master/LICENSE).
+
+
 
 [ico-version]: https://img.shields.io/packagist/v/:vendor/:package_name.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-Unlicense-brightgreen.svg?style=flat-square
