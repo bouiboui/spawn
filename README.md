@@ -65,7 +65,7 @@ php spawn.phar "php get_gravatar.php" --dir="data/users"
 ```
 Save output to a file
 ``` bash
-php spawn.phar "php get_twitter_handle.php" --dir="data/users" --outfile=handles.txt
+php spawn.phar "php get_twitter_handle.php" --dir="data/users" --outfile="handles.txt"
 
 # handles.txt
 $ php get_twitter_handle.php "data/users/martin-fowler.json"
