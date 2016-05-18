@@ -43,41 +43,50 @@ class RunCommand extends Command
             }
         }
 
-        $progressBar = new ProgressBar($output, $spawn->getProcessesCount());
-        $progressBar->setFormat(' %current%/%max% [%bar%] %percent:3s%% (%filename%) %elapsed:6s%/%estimated:-6s% %memory:6s%');
+        if ($spawn->getProcessesCount() > 0) {
 
-        /** @var ProcessHelper $processHelper */
-        $processHelper = $this->getHelperSet()->get('process');
+            $progressBar = new ProgressBar($output, $spawn->getProcessesCount());
+            $progressBar->setFormat(' %current%/%max% [%bar%] %percent:3s%% (%filename%) %elapsed:6s%/%estimated:-6s% %memory:6s%');
 
-        // Before start
-        $spawn->addOnBeforeStartListener(function () use ($output, $spawn) {
-            $formattedLine = $this->getHelper('formatter')
-                ->formatSection('Spawn', sprintf('Starting %d process(es)', $spawn->getProcessesCount()) );
+            /** @var ProcessHelper $processHelper */
+            $processHelper = $this->getHelperSet()->get('process');
+
+            // Before start
+            $spawn->addOnBeforeStartListener(function () use ($output, $spawn) {
+                $formattedLine = $this->getHelper('formatter')
+                    ->formatSection('Spawn', sprintf('Starting %d process(es)', $spawn->getProcessesCount()) );
+                $output->writeln($formattedLine);
+            });
+
+            // Process start
+            $spawn->addOnProcessStartListener(function (Process $p) use ($output, $progressBar, $processHelper) {
+                $progressBar->setMessage($p->getCommandLine(), 'filename');
+                $processHelper->run($output, $p);
+            });
+
+            // Process end
+            $outfile = $input->getOption('outfile');
+            $spawn->addOnProcessEndListener(function (Process $p) use ($outfile, $progressBar) {
+                $progressBar->advance();
+                if (null !== $outfile && file_exists($outfile) && is_writable($outfile)) {
+                    file_put_contents($outfile, '$ ' . $p->getCommandLine() . PHP_EOL . $p->getOutput() . PHP_EOL . PHP_EOL, FILE_APPEND);
+                }
+            });
+
+            // Everything done
+            $spawn->addOnFinishListener(function () use ($progressBar) {
+                $progressBar->finish();
+            });
+
+            // Start!
+            $spawn->runProcesses();
+
+        } else {
+
+            // No process detected
+            $formattedLine = $this->getHelper('formatter')->formatSection('Spawn', 'Found no process to start.');
             $output->writeln($formattedLine);
-        });
-
-        // Process start
-        $spawn->addOnProcessStartListener(function (Process $p) use ($output, $progressBar, $processHelper) {
-            $progressBar->setMessage($p->getCommandLine(), 'filename');
-            $processHelper->run($output, $p);
-        });
-
-        // Process end
-        $outfile = $input->getOption('outfile');
-        $spawn->addOnProcessEndListener(function (Process $p) use ($outfile, $progressBar) {
-            $progressBar->advance();
-            if (null !== $outfile && file_exists($outfile) && is_writable($outfile)) {
-                file_put_contents($outfile, '$ ' . $p->getCommandLine() . PHP_EOL . $p->getOutput() . PHP_EOL . PHP_EOL, FILE_APPEND);
-            }
-        });
-
-        // Everything done
-        $spawn->addOnFinishListener(function () use ($progressBar) {
-            $progressBar->finish();
-        });
-
-        // Start!
-        $spawn->runProcesses();
+        }
 
     }
 
