@@ -13,5 +13,6 @@
     "psr-4": {
       "bouiboui\\Spawn\\": "src/bouiboui/Spawn"
     }
-  }
+  },
+  "bin": ["bin/spawn"]
 }
