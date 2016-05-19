@@ -7,7 +7,7 @@ class SpawnTest extends \PHPUnit_Framework_TestCase
 {
     public function testAddProcessFromDirectory()
     {
-        $this->assertCommandCount('test ' . dirname(dirname(__DIR__)) . '/data', 3);
+        $this->assertCommandCount('test ' . dirname(dirname(__DIR__)) . '/data', 4);
     }
 
     private function assertCommandCount($command, $count)
