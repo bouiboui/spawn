@@ -42,10 +42,13 @@ class Spawn
         $baseCommand = $command;
         $options = array_merge(['find' => null, 'contents' => false], $options);
         foreach ($command as $directoryIndex => $directory) {
+            if ($at = 0 === strpos($directory, '@')) {
+                $directory = ltrim($directory, '@');
+            }
             if (file_exists($directory) && is_dir($directory)) {
                 foreach (glob(rtrim($directory, '/') . '/' . ($options['find'] ?: '*.*')) as $filePath) {
                     if (is_file($filePath)) {
-                        $baseCommand[$directoryIndex] = $options['contents'] ? file_get_contents($filePath) : $filePath;
+                        $baseCommand[$directoryIndex] = ($at ? '@' : '') . $filePath;
                         $this->addProcess($baseCommand);
                     }
                 }
