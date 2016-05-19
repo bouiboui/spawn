@@ -21,44 +21,33 @@ class Spawn
      */
     public function addProcessesFromCommand($command)
     {
-        $processesCount = count($this->processes);
-        $this->addRanges($command);
-        $this->addDirectories($command);
-        if ($processesCount != count($this->processes)) {
-            $this->addSingleProcess($command);
-        }
-    }
-
-    public function recursiveParseRange(&$res) {
-        $pattern = '/\{([^\}]+?)\}/';
-        foreach ($res as $resnum => $command) {
-            preg_match($pattern, $command, $ranges);
-            if (isset($ranges[1]) && count($ranges[1]) > 0) {
-                $p = $ranges[0];
-                list($r0, $r1) = explode('-', $ranges[1]);
-                foreach (range($r0, $r1) as $n) {
-                    $res[] = str_replace($p, $n, $command);
-                }
-                unset($res[$resnum]);
-                $this->recursiveParseRange($res);
+        if (count($command) > 0) {
+            $processesCount = count($this->processes);
+            $this->addDirectories($command);
+            $this->addRanges($command);
+            if ($processesCount === count($this->processes)) {
+                $this->addProcess($command);
             }
         }
-        return $res;
     }
 
     /**
-     * Adds processes when arguments are provided
-     * Detects ranges in the arguments and spawns adequate number of processes
+     * Adds a process for each file in a directory
      * @param array $command
-     * @internal param string $arguments
      */
-    public function addRanges($command)
+    public function addDirectories($command)
     {
-        $res = [implode('#', $command)];
-        $this->recursiveParseRange($res);
-        $res = array_keys(array_flip($res));
-        foreach ($res as $resitem) {
-            $this->addProcess(explode('#', $resitem));
+        $baseCommand = $command;
+        foreach ($command  as $fileIndex =>  $directory) {
+            if (file_exists($directory) && is_dir($directory)) {
+                foreach (array_diff(scandir($directory), ['.', '..']) as $fileName) {
+                    $filePath = rtrim($directory, '/') . '/' . $fileName;
+                    if (is_file($filePath)) {
+                        $baseCommand[$fileIndex] = $filePath;
+                        $this->addProcess($baseCommand);
+                    }
+                }
+            }
         }
     }
 
@@ -76,29 +65,38 @@ class Spawn
     }
 
     /**
-     * Adds a process without detecting ranges
-     * @param string $command
-     * @param string|null $arguments
+     * Adds processes when arguments are provided
+     * Detects ranges in the arguments and spawns adequate number of processes
+     * @param array $command
+     * @internal param string $arguments
      */
-    public function addSingleProcess($command, $arguments = null)
+    public function addRanges($command)
     {
-        $this->addProcess(null === $arguments ? [$command] : [$command, $arguments]);
-    }
-
-    /**
-     * Adds a process for each file in a directory
-     * @param string $command
-     */
-    public function addDirectories($command)
-    {
-        if (file_exists($directory) && is_dir($directory)) {
-            foreach (array_diff(scandir($directory), ['.', '..']) as $fileName) {
-                $filePath = rtrim($directory, '/') . '/' . $fileName;
-                if (is_file($filePath)) {
-                    $this->addProcess([$command, $filePath]);
-                }
+        $res = [implode('#', $command)];
+        $this->recursiveParseRange($res);
+        $res = array_keys(array_flip($res));
+        if (count($res) > 1) {
+            foreach ($res as $resitem) {
+                $this->addProcess(explode('#', $resitem));
             }
         }
+    }
+
+    public function recursiveParseRange(&$res)
+    {
+        $pattern = '/\{([^\}]+?)\}/';
+        foreach ($res as $resNum => $command) {
+            preg_match($pattern, $command, $ranges);
+            if (array_key_exists(1, $ranges) && count($ranges[1]) > 0) {
+                list($r0, $r1) = explode('-', $ranges[1]);
+                foreach (range($r0, $r1) as $n) {
+                    $res[] = str_replace($ranges[0], $n, $command);
+                }
+                unset($res[$resNum]);
+                $this->recursiveParseRange($res);
+            }
+        }
+        return $res;
     }
 
     /**
