@@ -18,27 +18,48 @@ class Spawn
      * Adds processes when arguments are provided
      * Detects ranges in the arguments and spawns adequate number of processes
      * @param string $command
-     * @param string $arguments
      */
-    public function addProcessesFromArguments($command, $arguments)
+    public function addProcessesFromCommand($command)
     {
-        // Detect range
-        preg_match_all('/\{([^\}]+?)\}/', $arguments, $ranges);
-
-        // Add processes from range
-        if (count($ranges[$pregResults = 1]) > 0) {
-            foreach ($ranges[$pregResults] as $range) {
-                list($rStart, $rEnd) = explode('-', $range);
-                $rNum = -1;
-                while (++$rNum <= $rEnd - $rStart) {
-                    $this->addProcess([$command, str_replace('{' . $range . '}', $rStart + $rNum, $arguments)]);
-                }
-            }
-            return;
+        $processesCount = count($this->processes);
+        $this->addRanges($command);
+        $this->addDirectories($command);
+        if ($processesCount != count($this->processes)) {
+            $this->addSingleProcess($command);
         }
+    }
 
-        // No range detected; Add process as-is (light!)
-        $this->addSingleProcess($command, $arguments);
+    public function recursiveParseRange(&$res) {
+        $pattern = '/\{([^\}]+?)\}/';
+        foreach ($res as $resnum => $command) {
+            preg_match($pattern, $command, $ranges);
+            if (isset($ranges[1]) && count($ranges[1]) > 0) {
+                $p = $ranges[0];
+                list($r0, $r1) = explode('-', $ranges[1]);
+                foreach (range($r0, $r1) as $n) {
+                    $res[] = str_replace($p, $n, $command);
+                }
+                unset($res[$resnum]);
+                $this->recursiveParseRange($res);
+            }
+        }
+        return $res;
+    }
+
+    /**
+     * Adds processes when arguments are provided
+     * Detects ranges in the arguments and spawns adequate number of processes
+     * @param array $command
+     * @internal param string $arguments
+     */
+    public function addRanges($command)
+    {
+        $res = [implode('#', $command)];
+        $this->recursiveParseRange($res);
+        $res = array_keys(array_flip($res));
+        foreach ($res as $resitem) {
+            $this->addProcess(explode('#', $resitem));
+        }
     }
 
     /**
@@ -67,9 +88,8 @@ class Spawn
     /**
      * Adds a process for each file in a directory
      * @param string $command
-     * @param string $directory
      */
-    public function addProcessesFromDirectory($command, $directory)
+    public function addDirectories($command)
     {
         if (file_exists($directory) && is_dir($directory)) {
             foreach (array_diff(scandir($directory), ['.', '..']) as $fileName) {

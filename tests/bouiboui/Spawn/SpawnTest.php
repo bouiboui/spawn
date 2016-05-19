@@ -15,21 +15,21 @@ class SpawnTest extends \PHPUnit_Framework_TestCase
     public function testAddProcessWithSingleRange()
     {
         $spawn = new Spawn();
-        $spawn->addProcessesFromArguments('php tests/test.php', 'arg{0-0}');
+        $spawn->addProcessesFromCommand('php tests/test.php', 'arg{0-0}');
         static::assertEquals(1, $spawn->getProcessesCount());
     }
 
     public function testAddProcessWithMultipleRange()
     {
         $spawn = new Spawn();
-        $spawn->addProcessesFromArguments('php tests/test.php', 'arg{1-10}');
+        $spawn->addProcessesFromCommand('php tests/test.php', 'arg{1-10}');
         static::assertEquals(10, $spawn->getProcessesCount());
     }
 
     public function testAddProcessWithoutRange()
     {
         $spawn = new Spawn();
-        $spawn->addProcessesFromArguments('php tests/test.php', 'arg1');
+        $spawn->addProcessesFromCommand('php tests/test.php', 'arg1');
         static::assertEquals(1, $spawn->getProcessesCount());
     }
 

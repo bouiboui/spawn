@@ -18,30 +18,15 @@ class RunCommand extends Command
     {
         $this->setName('run')
             ->addArgument('cmd', InputArgument::IS_ARRAY)
-            ->addOption('args', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY)
-            ->addOption('dir', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY)
             ->addOption('outfile', null, InputOption::VALUE_REQUIRED);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $spawn = new Spawn();
-        $args = $input->getOption('args') ?: [];
-        $dir = $input->getOption('dir') ?: [];
 
         // Parse commands
-        foreach ($input->getArguments()['cmd'] as $cNum => $command) {
-
-            if ($hasArguments = array_key_exists($cNum, $args)) {
-                $spawn->addProcessesFromArguments($command, $args[$cNum]);
-            }
-            if ($hasDirectory = array_key_exists($cNum, $dir)) {
-                $spawn->addProcessesFromDirectory($command, $dir[$cNum]);
-            }
-            if (!$hasArguments && !$hasDirectory) {
-                $spawn->addSingleProcess($command);
-            }
-        }
+        $spawn->addProcessesFromCommand($input->getArguments()['cmd']);
 
         if ($spawn->getProcessesCount() > 0) {
 
@@ -54,7 +39,7 @@ class RunCommand extends Command
             // Before start
             $spawn->addOnBeforeStartListener(function () use ($output, $spawn) {
                 $formattedLine = $this->getHelper('formatter')
-                    ->formatSection('Spawn', sprintf('Starting %d process(es)', $spawn->getProcessesCount()) );
+                    ->formatSection('Spawn', sprintf('Starting %d process(es)', $spawn->getProcessesCount()));
                 $output->writeln($formattedLine);
             });
 
