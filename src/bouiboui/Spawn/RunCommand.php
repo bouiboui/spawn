@@ -19,7 +19,6 @@ class RunCommand extends Command
         $this->setName('run')
             ->addArgument('cmd', InputArgument::IS_ARRAY)
             ->addOption('find', null, InputOption::VALUE_REQUIRED)
-            ->addOption('contents', null, InputOption::VALUE_NONE)
             ->addOption('outfile', null, InputOption::VALUE_REQUIRED);
     }
     
