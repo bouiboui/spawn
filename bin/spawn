@@ -1,4 +1,4 @@
-#!/usr/bin/php
+#!/usr/bin/env php
 <?php
 
 $app = include_once dirname(__DIR__) . '/app/app.php';
