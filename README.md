@@ -23,6 +23,7 @@ Recently I've worked on several projects that call micro-processes for simple ta
 **Linux/MacOS**
 ```bash
 wget https://github.com/bouiboui/spawn/releases/download/0.2/spawn.phar
+chmod +x spawn.phar
 
 # To call `spawn` from anywhere:
 sudo mv spawn.phar /usr/local/bin/spawn
@@ -47,7 +48,7 @@ Pass arguments
 ```
 Add a range in the arguments
 ``` bash
-./spawn.phar php convert_pdfs.php 'document{1-42}.pdf'
+./spawn.phar php convert_pdfs.php document{1-42}.pdf
 
 [Spawn] Starting 42 process(es)
   4/42 [==>-------------------------]   9% ('php' 'convert_pdfs.php' 'document4.pdf') < 1 sec/< 1 sec 1.2 MiB
@@ -74,7 +75,7 @@ Run process for each file in a directory
 ```
 Save output to a file
 ``` bash
-./spawn.phar php get_twitter_handle.php data/users --outfile="handles.txt"
+./spawn.phar php get_twitter_handle.php data/users --outfile=handles.txt
 
 # handles.txt
 $ php get_twitter_handle.php "data/users/martin-fowler.json"
@@ -86,7 +87,24 @@ $ php get_twitter_handle.php "data/users/rasmus-lerdorf.json"
 $ php get_twitter_handle.php "data/users/aaron-saray.json"
 @aaronsaray
 ```
+Verbose mode
+```bash
+./spawn.phar php tests/test.php tests/data -vvv
 
+[Spawn] Starting 3 process(es)
+  RUN  'php' 'tests/test.php' 'tests/data/1.txt'
+  OUT  Contents from 1.txt
+  RES  Command ran successfully
+ 1/3 [=========>------------------]  33% ('php' 'tests/test.php' 'tests/data/1.txt') < 1 sec/< 1 sec 2.5 MiB  
+  RUN  'php' 'tests/test.php' 'tests/data/2.txt'
+  OUT  Contents from 2.txt
+  RES  Command ran successfully
+ 2/3 [==================>---------]  66% ('php' 'tests/test.php' 'tests/data/2.txt') 2 secs/3 secs 2.5 MiB  
+  RUN  'php' 'tests/test.php' 'tests/data/3.txt'
+  OUT  Contents from 3.txt
+  RES  Command ran successfully
+ 3/3 [============================] 100% ('php' 'tests/test.php' 'tests/data/3.txt') 3 secs/3 secs 2.5 MiB%   
+```
 
 ## Credits
 
