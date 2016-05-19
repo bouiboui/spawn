@@ -18,12 +18,13 @@ class Spawn
      * Adds processes when arguments are provided
      * Detects ranges in the arguments and spawns adequate number of processes
      * @param string $command
+     * @param array $options
      */
-    public function addProcessesFromCommand($command, $find = null)
+    public function addProcessesFromCommand($command, array $options = array())
     {
         if (count($command) > 0) {
             $processesCount = count($this->processes);
-            $this->addDirectories($command, $find);
+            $this->addDirectories($command, $options);
             $this->addRanges($command);
             if ($processesCount === count($this->processes)) {
                 $this->addProcess($command);
@@ -34,16 +35,17 @@ class Spawn
     /**
      * Adds a process for each file in a directory
      * @param array $command
-     * @param null $find
+     * @param array $options
      */
-    public function addDirectories($command, $find = null)
+    public function addDirectories($command, array $options = array())
     {
         $baseCommand = $command;
+        $options = array_merge(['find' => null, 'contents' => false], $options);
         foreach ($command as $directoryIndex => $directory) {
             if (file_exists($directory) && is_dir($directory)) {
-                foreach (glob(rtrim($directory, '/') . '/' . ($find ?: '*.*')) as $filePath) {
+                foreach (glob(rtrim($directory, '/') . '/' . ($options['find'] ?: '*.*')) as $filePath) {
                     if (is_file($filePath)) {
-                        $baseCommand[$directoryIndex] = $filePath;
+                        $baseCommand[$directoryIndex] = $options['contents'] ? file_get_contents($filePath) : $filePath;
                         $this->addProcess($baseCommand);
                     }
                 }
