@@ -76,7 +76,7 @@ POST JSON files from a directory to an URL
 [Spawn] Starting 3 process(es)
  1/3 [=========>------------------]  33% ("curl" "-XPOST" "-H" "Content-type: application/json" "-d" "@json/invoices/january-april.json" "http://webservice/api/v1/invoices/")  1 sec/3 secs 1.2 MiB
  2/3 [==================>---------]  66% ("curl" "-XPOST" "-H" "Content-type: application/json" "-d" "@json/invoices/may-august.json" "http://webservice/api/v1/invoices/")  1 sec/2 secs 1.5 MiB
- 3/3 [============================] 100% ("curl" "-XPOST" "-H" "Content-type: application/json" "-d"  "@json/invoices/september-december.json" "http://webservice/api/v1/invoices/") 2 secs/2 secs 1.5 MiB
+ 3/3 [============================] 100% ("curl" "-XPOST" "-H" "Content-type: application/json" "-d" "@json/invoices/september-december.json" "http://webservice/api/v1/invoices/") 2 secs/2 secs 1.5 MiB
 ```
 Run process for each file in a directory
 ``` bash
