@@ -38,12 +38,12 @@ class Spawn
     public function addDirectories($command)
     {
         $baseCommand = $command;
-        foreach ($command  as $fileIndex =>  $directory) {
+        foreach ($command as $directoryIndex => $directory) {
             if (file_exists($directory) && is_dir($directory)) {
                 foreach (array_diff(scandir($directory), ['.', '..']) as $fileName) {
                     $filePath = rtrim($directory, '/') . '/' . $fileName;
                     if (is_file($filePath)) {
-                        $baseCommand[$fileIndex] = $filePath;
+                        $baseCommand[$directoryIndex] = $filePath;
                         $this->addProcess($baseCommand);
                     }
                 }
@@ -72,12 +72,12 @@ class Spawn
      */
     public function addRanges($command)
     {
-        $res = [implode('#', $command)];
-        $this->recursiveParseRange($res);
-        $res = array_keys(array_flip($res));
-        if (count($res) > 1) {
-            foreach ($res as $resitem) {
-                $this->addProcess(explode('#', $resitem));
+        $rangeProcesses = [implode('#', $command)];
+        $this->recursiveParseRange($rangeProcesses);
+        $rangeProcesses = array_keys(array_flip($rangeProcesses));
+        if (count($rangeProcesses) > 1) {
+            foreach ($rangeProcesses as $process) {
+                $this->addProcess(explode('#', $process));
             }
         }
     }
