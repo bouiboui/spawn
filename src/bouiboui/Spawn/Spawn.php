@@ -19,11 +19,11 @@ class Spawn
      * Detects ranges in the arguments and spawns adequate number of processes
      * @param string $command
      */
-    public function addProcessesFromCommand($command)
+    public function addProcessesFromCommand($command, $find = null)
     {
         if (count($command) > 0) {
             $processesCount = count($this->processes);
-            $this->addDirectories($command);
+            $this->addDirectories($command, $find);
             $this->addRanges($command);
             if ($processesCount === count($this->processes)) {
                 $this->addProcess($command);
@@ -34,14 +34,14 @@ class Spawn
     /**
      * Adds a process for each file in a directory
      * @param array $command
+     * @param null $find
      */
-    public function addDirectories($command)
+    public function addDirectories($command, $find = null)
     {
         $baseCommand = $command;
         foreach ($command as $directoryIndex => $directory) {
             if (file_exists($directory) && is_dir($directory)) {
-                foreach (array_diff(scandir($directory), ['.', '..']) as $fileName) {
-                    $filePath = rtrim($directory, '/') . '/' . $fileName;
+                foreach (glob(rtrim($directory, '/') . '/' . ($find ?: '*.*')) as $filePath) {
                     if (is_file($filePath)) {
                         $baseCommand[$directoryIndex] = $filePath;
                         $this->addProcess($baseCommand);

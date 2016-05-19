@@ -18,6 +18,7 @@ class RunCommand extends Command
     {
         $this->setName('run')
             ->addArgument('cmd', InputArgument::IS_ARRAY)
+            ->addOption('find', null, InputOption::VALUE_REQUIRED)
             ->addOption('outfile', null, InputOption::VALUE_REQUIRED);
     }
 
@@ -26,7 +27,7 @@ class RunCommand extends Command
         $spawn = new Spawn();
 
         // Parse commands
-        $spawn->addProcessesFromCommand($input->getArguments()['cmd']);
+        $spawn->addProcessesFromCommand($input->getArgument('cmd'), $input->getOption('find'));
 
         if ($spawn->getProcessesCount() > 0) {
 
