@@ -32,14 +32,7 @@ sudo mv spawn.phar /usr/local/bin/spawn
 
 ## Usage
 
-Run a single process
-``` bash
-./spawn.phar php send_bulk_data.php
-
-[Spawn] Starting 1 process(es)
- 1/1 [============================] 100% ('php' 'send_bulk_data.php')  1 min/1 min  1.2 MiB
-```
-Pass arguments
+Run a process with arguments
 ``` bash
 ./spawn.phar php send_latest_invoices.php startdate=2016-01-01
 
@@ -63,6 +56,15 @@ Add a range in the arguments
  40/42 [==========================>-]  95% ('php' 'convert_pdfs.php' 'document40.pdf') 8 secs/8 secs 1.2 MiB
  42/42 [============================] 100% ('php' 'convert_pdfs.php' 'document42.pdf') 9 secs/9 secs 1.2 MiB
 
+```
+Call a URL with a range
+```bash
+./spawn.phar curl http://webservice/api/v1/customers/{1-3}/
+
+[Spawn] Starting 3 process(es)
+ 1/3 [=========>------------------]  33% ('curl' 'http://webservice/api/v1/customers/1/') 4 secs/12 secs 1.2 MiB
+ 2/3 [==================>---------]  66% ('curl' 'http://webservice/api/v1/customers/2/') 5 secs/8 secs 1.2 MiB
+ 3/3 [============================] 100% ('curl' 'http://webservice/api/v1/customers/3/') 9 secs/9 secs 1.2 MiB
 ```
 Run process for each file in a directory
 ``` bash
