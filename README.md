@@ -32,14 +32,14 @@ sudo mv spawn.phar /usr/local/bin/spawn
 
 ## Usage
 
-Run a process with arguments
+Run a process with arguments separated by spaces
 ``` bash
 ./spawn.phar php send_latest_invoices.php startdate=2016-01-01
 
 [Spawn] Starting 1 process(es)
  1/1 [============================] 100% ('php' 'send_latest_invoices.php' 'startdate=2016-01-01') 13 secs/13 secs 1.2 MiB
 ```
-Add a range in the arguments
+Add a numerical range in the arguments
 ``` bash
 ./spawn.phar php convert_pdfs.php document{1-42}.pdf
 
@@ -57,7 +57,7 @@ Add a range in the arguments
  42/42 [============================] 100% ('php' 'convert_pdfs.php' 'document42.pdf') 9 secs/9 secs 1.2 MiB
 
 ```
-Call a URL with a range
+Make GET calls to an URL with a range
 ```bash
 ./spawn.phar curl http://webservice/api/v1/customers/{1-3}/
 
@@ -65,6 +65,18 @@ Call a URL with a range
  1/3 [=========>------------------]  33% ('curl' 'http://webservice/api/v1/customers/1/') 4 secs/12 secs 1.2 MiB
  2/3 [==================>---------]  66% ('curl' 'http://webservice/api/v1/customers/2/') 5 secs/8 secs 1.2 MiB
  3/3 [============================] 100% ('curl' 'http://webservice/api/v1/customers/3/') 9 secs/9 secs 1.2 MiB
+```
+POST JSON files from a directory to an URL
+
+* Important: use `--` or Spawn will try to parse curl options
+* `-d @` before the filename sends the contents of the file
+```bash
+./spawn.phar -- curl -XPOST -H "Content-type: application/json" -d @json/invoices http://webservice/api/v1/invoices/
+
+[Spawn] Starting 3 process(es)
+ 1/3 [=========>------------------]  33% ("curl" "-XPOST" "-H" "Content-type: application/json" "-d" "@json/invoices/january-april.json" "http://webservice/api/v1/invoices/")  1 sec/3 secs 1.2 MiB
+ 2/3 [==================>---------]  66% ("curl" "-XPOST" "-H" "Content-type: application/json" "-d" "@json/invoices/may-august.json" "http://webservice/api/v1/invoices/")  1 sec/2 secs 1.5 MiB
+ 3/3 [============================] 100% ("curl" "-XPOST" "-H" "Content-type: application/json" "-d"  "@json/invoices/september-december.json" "http://webservice/api/v1/invoices/") 2 secs/2 secs 1.5 MiB
 ```
 Run process for each file in a directory
 ``` bash
