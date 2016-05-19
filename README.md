@@ -78,9 +78,9 @@ POST JSON files from a directory to an URL
  2/3 [==================>---------]  66% ("curl" "-XPOST" "-H" "Content-type: application/json" "-d" "@json/invoices/may-august.json" "http://webservice/api/v1/invoices/")  1 sec/2 secs 1.5 MiB
  3/3 [============================] 100% ("curl" "-XPOST" "-H" "Content-type: application/json" "-d" "@json/invoices/september-december.json" "http://webservice/api/v1/invoices/") 2 secs/2 secs 1.5 MiB
 ```
-Run process for each file in a directory
+Run process for each file in a directory, filtered by the .json extension
 ``` bash
-./spawn.phar php get_gravatar.php data/users
+./spawn.phar php get_gravatar.php data/users --find=*.json
 
 [Spawn] Starting 3 process(es)
  1/3 [=========>------------------]  33% ('php' 'get_gravatar.php' 'data/users/martin-fowler.json') 4 secs/12 secs 1.2 MiB
