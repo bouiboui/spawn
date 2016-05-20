@@ -21,13 +21,21 @@ Recently I've worked on several projects that call micro-processes for simple ta
 [Download spawn.phar from the latest release](https://github.com/bouiboui/spawn/releases/download/0.3/spawn.phar)
 
 **Linux/MacOS**
+
+Composer
+```bash
+composer global require bouiboui/spawn
+sudo ln -s ~/.composer/vendor/bin/spawn /usr/local/bin
+```
+
+Manual
 ```bash
 wget https://github.com/bouiboui/spawn/releases/download/0.3/spawn.phar
 chmod +x spawn.phar
-
-# To call `spawn` from anywhere:
 sudo mv spawn.phar /usr/local/bin/spawn
 ```
+
+
 
 
 ## Usage
