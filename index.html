@@ -45,11 +45,11 @@
 
 <p><strong>Windows</strong></p>
 
-<p><a href="https://github.com/bouiboui/spawn/releases/download/0.2/spawn.phar">Download spawn.phar from the latest release</a></p>
+<p><a href="https://github.com/bouiboui/spawn/releases/download/0.3/spawn.phar">Download spawn.phar from the latest release</a></p>
 
 <p><strong>Linux/MacOS</strong></p>
 
-<div class="highlight highlight-source-shell"><pre>wget https://github.com/bouiboui/spawn/releases/download/0.2/spawn.phar
+<div class="highlight highlight-source-shell"><pre>wget https://github.com/bouiboui/spawn/releases/download/0.3/spawn.phar
 chmod +x spawn.phar
 
 <span class="pl-c"># To call `spawn` from anywhere:</span>
@@ -58,21 +58,14 @@ sudo mv spawn.phar /usr/local/bin/spawn</pre></div>
 <h2>
 <a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
 
-<p>Run a single process</p>
-
-<div class="highlight highlight-source-shell"><pre>./spawn.phar php send_bulk_data.php
-
-[Spawn] Starting 1 process(es)
- 1/1 [<span class="pl-k">============================</span>] 100% (<span class="pl-s"><span class="pl-pds">'</span>php<span class="pl-pds">'</span></span> <span class="pl-s"><span class="pl-pds">'</span>send_bulk_data.php<span class="pl-pds">'</span></span>)  1 min/1 min  1.2 MiB</pre></div>
-
-<p>Pass arguments</p>
+<p>Run a process with arguments separated by spaces</p>
 
 <div class="highlight highlight-source-shell"><pre>./spawn.phar php send_latest_invoices.php startdate=2016-01-01
 
 [Spawn] Starting 1 process(es)
  1/1 [<span class="pl-k">============================</span>] 100% (<span class="pl-s"><span class="pl-pds">'</span>php<span class="pl-pds">'</span></span> <span class="pl-s"><span class="pl-pds">'</span>send_latest_invoices.php<span class="pl-pds">'</span></span> <span class="pl-s"><span class="pl-pds">'</span>startdate=2016-01-01<span class="pl-pds">'</span></span>) 13 secs/13 secs 1.2 MiB</pre></div>
 
-<p>Add a range in the arguments</p>
+<p>Add a numerical range in the arguments</p>
 
 <div class="highlight highlight-source-shell"><pre>./spawn.phar php convert_pdfs.php document{1-42}.pdf
 
@@ -90,9 +83,33 @@ sudo mv spawn.phar /usr/local/bin/spawn</pre></div>
  42/42 [<span class="pl-k">============================</span>] 100% (<span class="pl-s"><span class="pl-pds">'</span>php<span class="pl-pds">'</span></span> <span class="pl-s"><span class="pl-pds">'</span>convert_pdfs.php<span class="pl-pds">'</span></span> <span class="pl-s"><span class="pl-pds">'</span>document42.pdf<span class="pl-pds">'</span></span>) 9 secs/9 secs 1.2 MiB
 </pre></div>
 
-<p>Run process for each file in a directory</p>
+<p>Make GET calls to an URL with a range</p>
 
-<div class="highlight highlight-source-shell"><pre>./spawn.phar php get_gravatar.php data/users
+<div class="highlight highlight-source-shell"><pre>./spawn.phar curl http://webservice/api/v1/customers/{1-3}/
+
+[Spawn] Starting 3 process(es)
+ 1/3 [<span class="pl-k">=========&gt;</span>------------------]  33% (<span class="pl-s"><span class="pl-pds">'</span>curl<span class="pl-pds">'</span></span> <span class="pl-s"><span class="pl-pds">'</span>http://webservice/api/v1/customers/1/<span class="pl-pds">'</span></span>) 4 secs/12 secs 1.2 MiB
+ 2/3 [<span class="pl-k">==================&gt;</span>---------]  66% (<span class="pl-s"><span class="pl-pds">'</span>curl<span class="pl-pds">'</span></span> <span class="pl-s"><span class="pl-pds">'</span>http://webservice/api/v1/customers/2/<span class="pl-pds">'</span></span>) 5 secs/8 secs 1.2 MiB
+ 3/3 [<span class="pl-k">============================</span>] 100% (<span class="pl-s"><span class="pl-pds">'</span>curl<span class="pl-pds">'</span></span> <span class="pl-s"><span class="pl-pds">'</span>http://webservice/api/v1/customers/3/<span class="pl-pds">'</span></span>) 9 secs/9 secs 1.2 MiB</pre></div>
+
+<p>POST JSON files from a directory to an URL</p>
+
+<ul>
+<li>Important: use <code>--</code> or Spawn will try to parse curl options</li>
+<li>
+<code>-d @</code> before the filename sends the contents of the file</li>
+</ul>
+
+<div class="highlight highlight-source-shell"><pre>./spawn.phar -- curl -XPOST -H <span class="pl-s"><span class="pl-pds">"</span>Content-type: application/json<span class="pl-pds">"</span></span> -d @json/invoices http://webservice/api/v1/invoices/
+
+[Spawn] Starting 3 process(es)
+ 1/3 [<span class="pl-k">=========&gt;</span>------------------]  33% (<span class="pl-s"><span class="pl-pds">"</span>curl<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>-XPOST<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>-H<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>Content-type: application/json<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>-d<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>@json/invoices/january-april.json<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>http://webservice/api/v1/invoices/<span class="pl-pds">"</span></span>)  1 sec/3 secs 1.2 MiB
+ 2/3 [<span class="pl-k">==================&gt;</span>---------]  66% (<span class="pl-s"><span class="pl-pds">"</span>curl<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>-XPOST<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>-H<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>Content-type: application/json<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>-d<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>@json/invoices/may-august.json<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>http://webservice/api/v1/invoices/<span class="pl-pds">"</span></span>)  1 sec/2 secs 1.5 MiB
+ 3/3 [<span class="pl-k">============================</span>] 100% (<span class="pl-s"><span class="pl-pds">"</span>curl<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>-XPOST<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>-H<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>Content-type: application/json<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>-d<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>@json/invoices/september-december.json<span class="pl-pds">"</span></span> <span class="pl-s"><span class="pl-pds">"</span>http://webservice/api/v1/invoices/<span class="pl-pds">"</span></span>) 2 secs/2 secs 1.5 MiB</pre></div>
+
+<p>Run process for each file in a directory, filtered by the .json extension</p>
+
+<div class="highlight highlight-source-shell"><pre>./spawn.phar php get_gravatar.php data/users --find=<span class="pl-k">*</span>.json
 
 [Spawn] Starting 3 process(es)
  1/3 [<span class="pl-k">=========&gt;</span>------------------]  33% (<span class="pl-s"><span class="pl-pds">'</span>php<span class="pl-pds">'</span></span> <span class="pl-s"><span class="pl-pds">'</span>get_gravatar.php<span class="pl-pds">'</span></span> <span class="pl-s"><span class="pl-pds">'</span>data/users/martin-fowler.json<span class="pl-pds">'</span></span>) 4 secs/12 secs 1.2 MiB
