@@ -18,11 +18,11 @@ Recently I've worked on several projects that call micro-processes for simple ta
 
 **Windows**
 
-[Download spawn.phar from the latest release](https://github.com/bouiboui/spawn/releases/download/0.2/spawn.phar)
+[Download spawn.phar from the latest release](https://github.com/bouiboui/spawn/releases/download/0.3/spawn.phar)
 
 **Linux/MacOS**
 ```bash
-wget https://github.com/bouiboui/spawn/releases/download/0.2/spawn.phar
+wget https://github.com/bouiboui/spawn/releases/download/0.3/spawn.phar
 chmod +x spawn.phar
 
 # To call `spawn` from anywhere:
